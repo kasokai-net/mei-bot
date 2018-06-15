@@ -1,6 +1,6 @@
-const fs = require('fs')
 const Discord = require('discord.js')
 const client = new Discord.Client()
+const config = require('./config')
 
 const sleep = (msec) => {
   return new Promise(res => {
@@ -63,7 +63,9 @@ const deleteOldMessages =  async (channel, daysBefore, deleteLimit) => {
 
 client.on('ready', () => {
   const channel = client.channels.find(ch => (ch.name === 'general'))
-  deleteOldMessages(channel, 5, 800)
+
+  const { count, before } = config.deleteMessages
+  deleteOldMessages(channel, before, count)
 })
 
 client.login(process.env.API_TOKEN)
