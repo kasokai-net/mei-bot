@@ -1,5 +1,12 @@
+const fs = require('fs')
 const Discord = require('discord.js')
 const client = new Discord.Client()
+
+const sleep = (msec) => {
+  return new Promise(res => {
+    setTimeout(res, msec)
+  })
+}
 
 const deleteOldMessages =  async (channel, daysBefore, deleteLimit) => {
   // deletedLimitは独自のlimitです。limitに達するまでMessageの取得を繰り返します
@@ -24,6 +31,8 @@ const deleteOldMessages =  async (channel, daysBefore, deleteLimit) => {
     }
   }
 
+  console.log(oldMessages.length)
+
   const first = oldMessages[0].createdAt
 
   let counter = 0
@@ -33,6 +42,10 @@ const deleteOldMessages =  async (channel, daysBefore, deleteLimit) => {
       const deletedMessage = await oldMessages[i].delete(200)
       counter++
       console.log(counter)
+
+      if ((counter % 30) === 0) {
+        await sleep(120000)
+      }
     } catch (e) {
       console.log(e)
     }
@@ -40,17 +53,17 @@ const deleteOldMessages =  async (channel, daysBefore, deleteLimit) => {
 
   let doneMessage = ''
   if (isFinished) {
-    doneMessage = `${first}以前の投稿を${counter}件削除しました。これで全部消えたっぽいです。`
+    doneMessage = `${first}以前の投稿を${counter}件削除しました。これで全部消えたようです。`
   } else {
-    doneMessage = `${first}以前の投稿を${counter}件削除しました。まだ残ってるっぽいです。`
+    doneMessage = `${first}以前の投稿を${counter}件削除しました。まだ残ってるようです。`
   }
 
-  channel.sendMessage(doneMessage)
+  channel.send(doneMessage)
 }
 
 client.on('ready', () => {
   const channel = client.channels.find(ch => (ch.name === 'general'))
-  deleteOldMessages(channel, 5, 100)
+  deleteOldMessages(channel, 5, 800)
 })
 
 client.login(process.env.API_TOKEN)
