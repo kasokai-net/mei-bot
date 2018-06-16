@@ -8,7 +8,7 @@ const sleep = (msec) => {
   })
 }
 
-const deleteOldMessages =  async (channel, daysBefore, deleteLimit) => {
+const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
   // deletedLimitは独自のlimitです。limitに達するまでMessageの取得を繰り返します
   const date = new Date()
   date.setDate(date.getDate() - daysBefore)
@@ -61,10 +61,9 @@ const deleteOldMessages =  async (channel, daysBefore, deleteLimit) => {
     doneMessage = `${first}以前の投稿を${counter}件削除しました。まだ残ってるようです。`
   }
 
-  channel.send(doneMessage)
-//  channel.send(doneMessage).then(message => {
-//  client.destroy()
-// })
+  channel.send(doneMessage).then(message => {
+	  client.destroy()
+ })
 }
 
 client.on('ready', () => {
@@ -75,7 +74,7 @@ client.on('ready', () => {
 		channel.send('モチッ…')
   }
   const { count, before } = config.deleteMessages
-  deleteOldMessages(channel, before, count)
+  deleteOldMessages(client, channel, before, count)
 })
 
 client.login(process.env.API_TOKEN)
