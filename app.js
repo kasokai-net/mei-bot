@@ -62,13 +62,13 @@ const deleteOldMessages =  async (channel, daysBefore, deleteLimit) => {
   }
 
   channel.send(doneMessage)
-//	.then(process.exit(0))		// プロセス終了を明示
-//	.catch(console.error)
+//  channel.send(doneMessage).then(message => {
+//  client.destroy()
+// })
 }
 
 client.on('ready', () => {
   const channel = client.channels.find(ch => (ch.name === 'general'))
-
   if (!(Math.random()+.5|0)) {    // ログインメッセージ ∬゜ΘωΘÅ
 		channel.send('消しに来たよ〜！')
 	} else {
