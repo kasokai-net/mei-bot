@@ -52,18 +52,28 @@ const deleteOldMessages =  async (channel, daysBefore, deleteLimit) => {
   }
 
   let doneMessage = ''
-  if (isFinished) {
+  if  (counter < 2) {
+	  doneMessage = 'なにも消すものなかった…'
+	  }
+  else if (isFinished) {
     doneMessage = `${first}以前の投稿を${counter}件削除しました。これで全部消えたようです。`
   } else {
     doneMessage = `${first}以前の投稿を${counter}件削除しました。まだ残ってるようです。`
   }
 
   channel.send(doneMessage)
+//	.then(process.exit(0))		// プロセス終了を明示
+//	.catch(console.error)
 }
 
 client.on('ready', () => {
   const channel = client.channels.find(ch => (ch.name === 'general'))
 
+  if (!(Math.random()+.5|0)) {    // ログインメッセージ ∬゜ΘωΘÅ
+		channel.send('消しに来たよ〜！')
+	} else {
+		channel.send('モチッ…')
+  }
   const { count, before } = config.deleteMessages
   deleteOldMessages(channel, before, count)
 })
