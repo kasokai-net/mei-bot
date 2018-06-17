@@ -32,11 +32,10 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
   }
 
   console.log(oldMessages.length)
-
-  const first = oldMessages[0].createdAt
-
+	
   let counter = 0
-
+  if (oldMessages.length > 0) {
+  const first = oldMessages[0].createdAt
   for (let i = 0; i < oldMessages.length; i++) {
     try {
       const deletedMessage = await oldMessages[i].delete(200)
@@ -50,9 +49,9 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
       console.log(e)
     }
   }
-
+  }
   let doneMessage = ''
-  if  (counter < 2) {
+  if  (counter === 0) {
 	  doneMessage = 'なにも消すものなかった…'
 	  }
   else if (isFinished) {
