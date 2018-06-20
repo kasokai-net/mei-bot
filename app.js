@@ -32,7 +32,7 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
   }
 
   console.log(oldMessages.length)
-	
+  
   let counter = 0
   if (oldMessages.length > 0) {
   const first = oldMessages[0].createdAt
@@ -50,6 +50,9 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
     }
   }
   }
+	if (typeof(first) === "undefined") {		// APIで投稿日の取得に失敗したのか first が undefined で怒られるケースを確認したため
+		first = ""
+	}
   let doneMessage = ''
   if  (counter === 0) {
 	  doneMessage = 'なにも消すものなかった…'
@@ -60,7 +63,7 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
     doneMessage = `${first}以前の投稿を${counter}件削除しました。まだ残ってるようです。`
   }
 
-  channel.send(doneMessage).then(message => {
+  channel.send(doneMessage).then(function() {
 	  client.destroy()
  })
 }
