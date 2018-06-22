@@ -32,10 +32,10 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
   }
 
   console.log(oldMessages.length)
-  
+  var first = date	// 消去件数が0の場合messagesが存在せず投稿時刻取得に失敗するため 初期値にローカル基準時刻を置く
   let counter = 0
   if (oldMessages.length > 0) {
-  const first = oldMessages[0].createdAt
+    first = oldMessages[0].createdAt	// 消去が実行された場合先頭メッセージの投稿時刻が取得できる
   for (let i = 0; i < oldMessages.length; i++) {
     try {
       const deletedMessage = await oldMessages[i].delete(200)
@@ -50,9 +50,7 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
     }
   }
   }
-	if (typeof(first) === "undefined") {		// APIで投稿日の取得に失敗したのか first が undefined で怒られるケースを確認したため
-		first = date
-	}
+
   let doneMessage = ''
   if  (counter === 0) {
 	  doneMessage = `${first}以前にはなにも消すものなかった…`
