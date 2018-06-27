@@ -36,19 +36,20 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
   let counter = 0
   if (oldMessages.length > 0) {
     first = oldMessages[0].createdAt	// 消去が実行された場合先頭メッセージの投稿時刻が取得できる
-  for (let i = 0; i < oldMessages.length; i++) {
-    try {
-      const deletedMessage = await oldMessages[i].delete(200)
-      counter++
-      console.log(counter)
+    for (let i = 0; i < oldMessages.length; i++) {
+      try {
+        const deletedMessage = await oldMessages[i].delete(200)
+        counter++
+        console.log(counter)
 
-      if ((counter % 30) === 0) {
-        await sleep(120000)
+        if ((counter % 30) === 0) {
+          await sleep(120000)
+        }
+      } catch (e) {
+        console.log(e)
+	i = oldMessages.length	// (※様子見)エラーが発生し無反応になるケースがあるため中途終了させる
       }
-    } catch (e) {
-      console.log(e)
     }
-  }
   }
 
   let doneMessage = ''
