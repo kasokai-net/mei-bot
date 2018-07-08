@@ -1,12 +1,13 @@
 const Discord = require('discord.js')
 const client = new Discord.Client()
 const config = require('./config')
-
+let isStalled = false
 const sleep = (msec) => {
   return new Promise(res => {
     setTimeout(res, msec)
   })
 }
+const intermissionMessages = ['ごしごし…', 'ふきふき…', 'もちもち…', 'もうあきたー']
 
 const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
   // deletedLimitは独自のlimitです。limitに達するまでMessageの取得を繰り返します
@@ -16,6 +17,7 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
   let oldMessages = []
   let lastMessageId = ''
   let isFinished = false
+
 
   while (oldMessages.length < deleteLimit) {
     const messages = await channel.fetchMessages({ limit: 100, before: lastMessageId })
@@ -42,11 +44,16 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
         counter++
         console.log(counter)
 
-        if ((counter % 30) === 0) {
+        if ((counter % 30) === 0) {	// 30件消去ごとに動作中アピール
+          channel.send(intermissionMessages[Math.floor(Math.random()*intermissionMessages.length)])
           await sleep(120000)
         }
       } catch (e) {
-        console.log(e)
+	    isStalled = true
+       console.log(e)
+	  const fs = require("fs")
+	fs.writeFileSync(Date.now()+".log", e)	// エラーログを残す
+	await sleep(120000)
 	i = oldMessages.length	// (※様子見)エラーが発生し無反応になるケースがあるため中途終了させる
       }
     }
@@ -65,6 +72,7 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
   channel.send(doneMessage).then(function() {
 	  client.destroy()
  })
+  if (isStalled) client.login(process.env.API_TOKEN)	// エラー中途終了が発生したらリトライ
 }
 
 client.on('ready', () => {
