@@ -8,6 +8,7 @@ const sleep = (msec) => {
   })
 }
 const intermissionMessages = ['ごしごし…', 'ふきふき…', 'もちもち…', 'もうあきたー']
+const rareIntermissionMessages = [':abuse:', ':penis:', ':chinchin:', ':todesking:', ':robot:', ':now_feeling:', ':zzz:']
 
 const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
   // deletedLimitは独自のlimitです。limitに達するまでMessageの取得を繰り返します
@@ -45,7 +46,11 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
         console.log(counter)
 
         if ((counter % 30) === 0) {	// 30件消去ごとに動作中アピール
-          channel.send(intermissionMessages[Math.floor(Math.random()*intermissionMessages.length)])
+          if (Math.floor(Math.random() * 20) === 0) {	// 5%レアメッセージ
+            channel.send(rareIntermissionMessages[Math.floor(Math.random()*rareIntermissionMessages.length)])
+          } else {
+            channel.send(intermissionMessages[Math.floor(Math.random()*intermissionMessages.length)])
+          }
           await sleep(120000)
         }
       } catch (e) {
