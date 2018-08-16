@@ -64,9 +64,9 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
     }
   }
 
-  let doneMessage = ''
-  if  (counter === 0) {
-	  doneMessage = `${first}以前にはなにも消すものなかった…`
+
+  if  (counter < 2) {
+	  doneMessage = 'なにも消すものなかった…'
 	  }
   else if (isFinished) {
     doneMessage = `${first}以前の投稿を${counter}件削除しました。これで全部消えたようです。`
@@ -74,10 +74,17 @@ const deleteOldMessages =  async (client, channel, daysBefore, deleteLimit) => {
     doneMessage = `${first}以前の投稿を${counter}件削除しました。まだ残ってるようです。`
   }
 
+<<<<<<< HEAD
   channel.send(doneMessage).then(function() {
 	  client.destroy()
  })
   if (isStalled) client.login(process.env.API_TOKEN)	// エラー中途終了が発生したらリトライ
+=======
+//  channel.send(doneMessage)
+  channel.send(doneMessage).then(message => {
+  client.destroy()
+ })
+>>>>>>> b49192c4c84eb4a9d424e7ea2d620465f8c018b1
 }
 
 client.on('ready', () => {
